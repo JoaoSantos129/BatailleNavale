@@ -8,7 +8,11 @@
 #include <stdio.h>
 #include <windows.h>
 
+/**
+ * Affichage du début du jeu
+ */
 void start(){
+    // Afficher des dessins de bateaux au lancement du jeu
     printf("\n\n"
            "                                                .\n"
            "                              .                 |\n"
@@ -25,6 +29,7 @@ void start(){
            "    .___________________________________________________________________'                        \\__________________________________________________/\n"
            "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n\n\n\n");
 
+    // Afficher un titre dessin du mot Battleship au lancement du jeu
     printf("                                           ╔════╗ ╔═════╗╔═══╦═══╗╔═══╦═══╗╔     ╔════╗╔═════╗╦      ╦╔═══╦═══╗╔═════╗\n"
            "                                           ║    ║ ║     ║    ║        ║    ║     ║     ║      ║      ║    ║    ║     ║\n"
            "                                           ║    ║ ║     ║    ║        ║    ║     ║     ║      ║      ║    ║    ║     ║\n"
@@ -33,15 +38,53 @@ void start(){
            "                                           ║     ║║     ║    ║        ║    ║     ║           ║║      ║    ║    ║\n"
            "                                           ╚═════╝╩     ╩    ╩        ╩    ╚═════╚════╝╚═════╝╩      ╩╚═══╩═══╝╩\n\n\n\n");
 
+    // Demander au joueur d'appuyer sur une touche pour continuer
     system("pause");
+    // Nettoyer l'interface
     system("cls");
+}
+
+/**
+ * Affiche le menu et demande au joueur ce qu'il veut faire
+ * @return Ce que le joueur veut faire
+ */
+char menu(){
+    // Préparation des variables
+    char playerChoice;
+    int characterEater; // Variable qui va supprimer touts les caractères dans la variable playerChoice sauf le premier
+
+    // Afficher le menu tant que le premier caractère taper n'est pas 0, 1, 2 ou 3
+    do {
+        // Présennter les options au joueur
+        printf("\n\nWelcome to Battleship!\n\n");
+        printf("Chose an option:\n");
+        printf(" 0 - Quit\n");
+        printf(" 1 - Play\n");
+        printf(" 2 - Rules\n");
+        printf(" 3 - Best Scores\n\n");
+        printf("Choice:");
+        // Récupération du choix du joueur
+        scanf("%c", &playerChoice);
+
+        // Supprimer touts les caractères de la variable playerChoice sauf le premier
+        while((characterEater = getchar()) != '\n' && characterEater != EOF);
+        // Nettoyer l'interface
+        system("cls");
+    }while(playerChoice < '0' || playerChoice > '3');
+    // Retourné le choix du joueur
+    return playerChoice;
 }
 
 int main() {
     // Commande pour les accents et caractères spéciaux
     SetConsoleOutputCP(65001);
 
+    // Préparation des variables
+    char choice = 0;
+
     start();
+
+    choice = menu();
 
     return 0;
 }
