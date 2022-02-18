@@ -3,7 +3,6 @@ file(REMOVE_RECURSE
   "BatailleNavale.exe.manifest"
   "BatailleNavale.pdb"
   "CMakeFiles/BatailleNavale.dir/main.c.obj"
-  "CMakeFiles/BatailleNavale.dir/main.c.obj.d"
   "libBatailleNavale.dll.a"
 )
 

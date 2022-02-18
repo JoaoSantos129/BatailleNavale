@@ -8,6 +8,9 @@
 #include <stdio.h>
 #include <windows.h>
 
+#define LINES 10
+#define COLUMNS 10
+
 /**
  * Changer la couleur de touts les prochains caractères en bleu clair
  */
@@ -97,7 +100,7 @@ char menu(){
 
         if(playerChoice < '0' || playerChoice > '3'){
             yellowColor();
-            printf("\n  PLEASE CHOSE AN AVAILABLE OPTION!\n\n");
+            printf("\n  PLEASE CHOOSE AN AVAILABLE OPTION!\n\n");
             resetColor();
         }
     }while(playerChoice < '0' || playerChoice > '3');
@@ -109,7 +112,7 @@ char menu(){
  * Affichage des règles du jeu
  */
 void rules(){
-    printf("  In this game I have secretly placed 5 warships in a grid:\n");
+    printf("\n\n  In this game I have secretly placed 5 warships in a grid:\n");
     printf("    - A Carrier, which occupies 5 spaces\n");
     printf("    - A Battleship, which occupies 4 spaces\n");
     printf("    - A Cruiser, which occupies 3 spaces\n");
@@ -137,7 +140,7 @@ void grid(){
            "    ║     ║  A  ║  B  ║  C  ║  D  ║  E  ║  F  ║  G  ║  H  ║  I  ║  J  ║\n"
            "    ╠═════╬═════╬═════╬═════╬═════╬═════╬═════╬═════╬═════╬═════╬═════╣\n");
 
-    for (int i = 1; i < 10; i++) {
+    for (int i = 1; i < LINES; i++) {
         printf("    ║  %d  ║     ║     ║     ║     ║     ║     ║     ║     ║     ║     ║\n"
                "    ╠═════╬═════╬═════╬═════╬═════╬═════╬═════╬═════╬═════╬═════╬═════╣\n", i);
     }
@@ -157,6 +160,20 @@ void fullscreen()
     keybd_event(VK_MENU,0x38,KEYEVENTF_KEYUP,0);
 }
 
+int askCoordinates(boolean letterOrNumber){
+    int place;
+
+    if (letterOrNumber == 0) {
+        printf("\n\n  Choose a collumn:");
+        scanf("%d", &place);
+    }else{
+        printf("\n  Choose a line:");
+        scanf("%d", &place);
+    }
+
+    return place;
+}
+
 int main() {
     fullscreen();
 
@@ -165,10 +182,13 @@ int main() {
 
     // Préparation des variables
     char choice;
+    int boats[LINES][COLUMNS] = {{0,0,0,0,0,0,0,0,2,0},{0,0,3,0,0,0,0,0,2,0},{0,0,3,0,0,0,0,0,0,0},{0,0,3,0,0,0,4,0,0,0},{0,0,0,0,0,0,4,0,0,0},{0,0,0,0,0,0,4,0,0,0},{0,0,0,0,0,0,4,0,0,0},{0,0,0,0,0,0,0,0,0,0},{5,5,5,5,5,0,0,0,0,0},{0,0,0,0,0,0,6,6,6,0}};
+    int coordinates;
+    boolean collumnOrLine;
 
     start();
 
-    // Boucle infini. Tourner le jeu tant que choice != 3
+    // Boucle infini. Tourner le jeu tant que choice est différent de 0
     for(;;) {
         choice = menu();
 
@@ -180,7 +200,11 @@ int main() {
 
             // Jouer
             case '1':
+                collumnOrLine = 0;
                 grid();
+                coordinates = askCoordinates(collumnOrLine);
+                collumnOrLine = 1;
+                coordinates = askCoordinates(collumnOrLine);
                 system("pause");
 
                 break;
@@ -193,8 +217,15 @@ int main() {
 
             // Afficher les scores
             default:
-                printf("Pas encore disponible\n");
-                system("pause");
+                //printf("Pas encore disponible\n");
+                for (int i = 0; i < LINES; i++) {
+                    for (int j = 0; j < COLUMNS; j++) {
+                        printf("%d", boats[i][j]);
+                    }
+                    printf("\n");
+                }
+
+                system("\npause");
 
                 break;
         }
