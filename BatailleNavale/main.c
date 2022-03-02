@@ -75,32 +75,29 @@ void start(){
 char menu(){
     // Préparation des variables
     char playerChoice;
-    int characterEater; // Variable qui va supprimer touts les caractères dans la variable playerChoice sauf le premier
 
     // Afficher le menu tant que le premier caractère taper n'est pas 0, 1, 2 ou 3
     do {
         // Présennter les options au joueur
         cyanColor();
-        printf("\n\n  Welcome to Battleship!\n\n");
+        printf("\n\n  Bienvenue à Battleship!\n\n");
         resetColor();
-        printf("  Chose an option:\n");
-        printf("    0 - Quit\n");
-        printf("    1 - Play\n");
-        printf("    2 - Rules\n");
-        printf("    3 - Best Scores\n\n");
-        printf("  Choice:");
+        printf("  Choisi une option:\n");
+        printf("    0 - Quitté\n");
+        printf("    1 - Jouer\n");
+        printf("    2 - Règles du jeu\n");
+        printf("    3 - Scores\n\n");
+        printf("  Choix:");
         // Récupération du choix du joueur
         scanf("%c", &playerChoice);
-
-        // Supprimer touts les caractères de la variable playerChoice sauf le premier
-        while((characterEater = getchar()) != '\n' && characterEater != EOF);
-
+        // Vider le buffer
+        fflush(stdin);
         // Nettoyer l'interface
         system("cls");
 
         if(playerChoice < '0' || playerChoice > '3'){
             yellowColor();
-            printf("\n  PLEASE CHOOSE AN AVAILABLE OPTION!\n\n");
+            printf("\n  CHOISIS UNE OPTION VALABLE!\n\n");
             resetColor();
         }
     }while(playerChoice < '0' || playerChoice > '3');
@@ -112,22 +109,21 @@ char menu(){
  * Affichage des règles du jeu
  */
 void rules(){
-    printf("\n\n  In this game I have secretly placed 5 warships in a grid:\n");
-    printf("    - A Carrier, which occupies 5 spaces\n");
-    printf("    - A Battleship, which occupies 4 spaces\n");
-    printf("    - A Cruiser, which occupies 3 spaces\n");
-    printf("    - A Submarine, which occupies 3 spaces\n");
-    printf("    - A Destroyer, which occupies 2 spaces\n\n");
-    printf("  Your goal is to guess where they are by shooting at coordinates (a letter and a number).\n");
-    printf("  Boats will always be placed vertically or horizontally, but never diagonally!\n");
-    printf("  Once you shot on all the boat's different spaces, that boat is destroyed!\n");
-    printf("  Once all the boats are destroyed, you win!\n");
-    printf("  The less shots you use, the better your score is!\n\n");
-    printf("  Possible events:\n");
-    printf("    - ' ' = Nothing happened yet\n");
-    printf("    - 'O' = Miss\n");
-    printf("    - 'X' = Shot\n");
-    printf("    - '#' = Destroyed boat space\n\n\n");
+    printf("\n\n  Dans ce jeu j'ai secrétement placé 5 bateaux de guerre dans une grille:\n");
+    printf("    - Un porte-avions, qui occupe 5 places\n");
+    printf("    - Un croiseur, qui occupe 4 places\n");
+    printf("    - Deux contre-torpilleurs, qui occupent 3 places\n");
+    printf("    - Un torpilleur, qui occupe 2 places\n\n");
+    printf("  Ton but est de découvrir et détruir touts mes bateaux en tirant sur des coordonées (une lettre et un numéro).\n");
+    printf("  Les bateaux seront placés en vertical ou en horizontal, mais jamais en diagonal!\n");
+    printf("  Une fois que toutes les différentes cases d'un bateaux sont touchés, le bateaux sera détruit!\n");
+    printf("  Une fois que touts les bateaux sont détruits, tu gagne!\n");
+    printf("  Le moins de fois tu tirs, le mieux sera ton score!\n\n");
+    printf("  Dans les cases de la grille, tu trouvera:\n");
+    printf("    - ' ' = Rien ne s'est passé pour l'instant\n");
+    printf("    - 'O' = Tu as raté ton tir\n");
+    printf("    - 'X' = Tu as tiré sur un bateau\n");
+    printf("    - '#' = Cette case fait partie d'un bateau détruit\n\n\n");
     system("pause");
     system("cls");
 }
@@ -160,20 +156,58 @@ void fullscreen()
     keybd_event(VK_MENU,0x38,KEYEVENTF_KEYUP,0);
 }
 
-int askCoordinates(boolean letterOrNumber){
-    int place;
+/**
+ * Demande une colonne à l'utilisateur
+ * @return la colonne
+ */
+char askColumn(){
+    char column;
 
-    if (letterOrNumber == 0) {
-        printf("\n\n  Choose a collumn:");
-        scanf("%d", &place);
-    }else{
-        printf("\n  Choose a line:");
-        scanf("%d", &place);
-    }
+    // Faire tant que le choix n'est pas entre A et J ou a et j
+    do {
+        // Demander la colonne à l'utilisateur
+        printf("  Choisi une colonne:");
+        scanf("%c", &column);
+        // Vider le buffer
+        fflush(stdin);
+        // Avertir l'utilisateur si le choix n'est pas entre A et J ou a et j
+        if (column < 65 || (column > 74 && column < 97) || column > 106){
+            yellowColor();
+            printf("\n  CHOISIS UNE OPTION VALABLE!\n\n");
+            resetColor();
+        }
+    } while (column < 65 || (column > 74 && column < 97) || column > 106);
 
-    return place;
+    return column;
 }
 
+/**
+ * Demande une ligne à l'utilisateur
+ * @return la ligne
+ */
+int askLine(){
+    int line;
+
+    // Faire tant que le choix n'est pas entre 1 et 10
+    do {
+        // Demander la ligne à l'utilisateur
+        printf("  Choisi une ligne:");
+        scanf("%d", &line);
+        fflush(stdin);
+        // Avertir l'utilisateur si le choix n'est pas entre 1 et 10
+        if (line > 10 || line < 1){
+            yellowColor();
+            printf("\n  CHOISIS UNE OPTION VALABLE!\n\n");
+            resetColor();
+        }
+    } while (line > 10 || line < 1);
+
+    return line;
+}
+
+int columnNumber(){
+
+}
 int main() {
     fullscreen();
 
@@ -183,8 +217,9 @@ int main() {
     // Préparation des variables
     char choice;
     int boats[LINES][COLUMNS] = {{0,0,0,0,0,0,0,0,2,0},{0,0,3,0,0,0,0,0,2,0},{0,0,3,0,0,0,0,0,0,0},{0,0,3,0,0,0,4,0,0,0},{0,0,0,0,0,0,4,0,0,0},{0,0,0,0,0,0,4,0,0,0},{0,0,0,0,0,0,4,0,0,0},{0,0,0,0,0,0,0,0,0,0},{5,5,5,5,5,0,0,0,0,0},{0,0,0,0,0,0,6,6,6,0}};
-    int coordinates;
-    boolean collumnOrLine;
+    int coordinatesLine;
+    char coordinatesColumn;
+    int coordinatesColumnNumber;
 
     start();
 
@@ -200,11 +235,10 @@ int main() {
 
             // Jouer
             case '1':
-                collumnOrLine = 0;
                 grid();
-                coordinates = askCoordinates(collumnOrLine);
-                collumnOrLine = 1;
-                coordinates = askCoordinates(collumnOrLine);
+                coordinatesColumn = askColumn();
+                coordinatesLine = askLine();
+                coordinatesColumnNumber = columnNumber();
                 system("pause");
 
                 break;
