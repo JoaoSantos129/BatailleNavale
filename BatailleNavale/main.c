@@ -33,6 +33,13 @@ void redColor() {
 }
 
 /**
+ * Changer la couleur de touts les prochains caractères en vert
+ */
+void greenColor() {
+    printf("\033[0;32m");
+}
+
+/**
  * Remettre par défaut la couleur des caractères
  */
 void resetColor() {
@@ -91,7 +98,7 @@ char menu() {
         printf("\n\n  Bienvenue à Battleship!\n\n");
         resetColor();
         printf("  Choisi une option:\n");
-        printf("    0 - Quitté\n");
+        printf("    0 - Quitter\n");
         printf("    1 - Jouer\n");
         printf("    2 - Règles du jeu\n");
         printf("    3 - Scores\n\n");
@@ -117,7 +124,7 @@ char menu() {
  * Affichage des règles du jeu
  */
 void rules() {
-    printf("\n\n  Dans ce jeu j'ai secrétement placé 5 bateaux de guerre dans une grille:\n");
+    printf("\n\n  Dans ce jeu j'ai secètement placé 5 bateaux de guerre dans une grille:\n");
     printf("    - Un porte-avions, qui occupe 5 places\n");
     printf("    - Un croiseur, qui occupe 4 places\n");
     printf("    - Deux contre-torpilleurs, qui occupent 3 places\n");
@@ -129,9 +136,21 @@ void rules() {
     printf("  Le moins de fois tu tirs, le mieux sera ton score!\n\n");
     printf("  Dans les cases de la grille, tu trouvera:\n");
     printf("    - ' ' = Rien ne s'est passé pour l'instant\n");
-    printf("    - 'O' = Tu as raté ton tir\n");
-    printf("    - 'X' = Tu as tiré sur un bateau\n");
-    printf("    - '#' = Cette case fait partie d'un bateau détruit\n\n\n");
+    printf("    - '");
+    cyanColor();
+    printf("O");
+    resetColor();
+    printf("' = Tu as raté ton tir\n");
+    printf("    - '");
+    yellowColor();
+    printf("X");
+    resetColor();
+    printf("' = Tu as tiré sur un bateau\n");
+    printf("    - '");
+    redColor();
+    printf("#");
+    resetColor();
+    printf("' = Cette case fait partie d'un bateau détruit\n\n\n");
     system("pause");
     system("cls");
 }
@@ -308,6 +327,7 @@ void changeGrid(char boatsLocations[LINES][COLUMNS]) {
                 printf("║");
             } else if (boatsLocations[i][j] == 'D' || boatsLocations[i][j] == 'T' || boatsLocations[i][j] == 'S' ||
                        boatsLocations[i][j] == 'Q' || boatsLocations[i][j] == 'C') {
+                // Afficher un "#" si le bateau est détruit
                 redColor();
                 printf("  #  ");
                 resetColor();
@@ -331,11 +351,23 @@ void changeGrid(char boatsLocations[LINES][COLUMNS]) {
     printf("\n    ╚═════╩═════╩═════╩═════╩═════╩═════╩═════╩═════╩═════╩═════╩═════╝\n\n");
 }
 
-void victory(char boatsLocation[LINES][COLUMNS]) {
+void victory(char boatsLocation[LINES][COLUMNS], int points) {
+    points = points * 100 / 83;
     system("cls");
     changeGrid(boatsLocation);
-    yellowColor();
-    printf("\n  YOU WIN!\n");
+    greenColor();
+    printf("\n  YOU WIN!\n\n");
+    resetColor();
+    printf("  Score: ");
+    if (points > 66){
+        printf("%d\n", points);
+    }else if (points > 33){
+        yellowColor();
+        printf("%d\n", points);
+    }else{
+        redColor();
+        printf("%d\n", points);
+    }
     resetColor();
     printf("\n  ");
     system("pause");
@@ -375,6 +407,7 @@ int main() {
         int boat4 = 4;
         int boat5 = 5;
         int events;
+        int score = 100;
 
         choice = menu();
 
@@ -482,13 +515,14 @@ int main() {
 
                         default:
                             printf("\n  Plouf\n");
+                            score--;
 
                             break;
                     }
                     printf("\n\n  ");
                     system("pause");
                 }
-                victory(boats);
+                victory(boats, score);
 
                 break;
 
