@@ -1,6 +1,6 @@
 /**
  * Auteur:      João Carvalho Santos
- * Date:        16.02.22
+ * Date:        09.03.22
  * Titre:       Bataille Navale
  * Description: Jeu Bataille Navale avec 5 bateaux, le joueur doit découvrir et détruire les 5 bateaux avec le minimum de coups
  */
@@ -22,7 +22,14 @@ void cyanColor() {
  * Changer la couleur de touts les prochains caractères en jaune
  */
 void yellowColor() {
-        printf("\033[0;33m");
+    printf("\033[0;33m");
+}
+
+/**
+ * Changer la couleur de touts les prochains caractères en rouge
+ */
+void redColor() {
+    printf("\033[0;31m");
 }
 
 /**
@@ -35,7 +42,7 @@ void resetColor() {
 /**
  * Affichage du début du jeu
  */
-void start(){
+void start() {
     // Afficher des dessins de bateaux au lancement du jeu
     printf("\n\n"
            "                                                .\n"
@@ -60,9 +67,10 @@ void start(){
            "                                           ╠════╩╗╠═════╣    ║        ║    ║     ╠══   ╚═════╗╠══════╣    ║    ╠═════╝\n"
            "                                           ║     ║║     ║    ║        ║    ║     ║           ║║      ║    ║    ║\n"
            "                                           ║     ║║     ║    ║        ║    ║     ║           ║║      ║    ║    ║\n"
-           "                                           ╚═════╝╩     ╩    ╩        ╩    ╚═════╚════╝╚═════╝╩      ╩╚═══╩═══╝╩\n\n\n\n");
+           "                                           ╚═════╝╩     ╩    ╩        ╩    ╚═════╚════╝╚═════╝╩      ╩╚═══╩═══╝╩\n\n\n");
 
     // Demander au joueur d'appuyer sur une touche pour continuer
+    printf("\n  ");
     system("pause");
     // Nettoyer l'interface
     system("cls");
@@ -72,7 +80,7 @@ void start(){
  * Affiche le menu et demande au joueur ce qu'il veut faire
  * @return Ce que le joueur veut faire: 0 = quitter, 1 = jouer, 2 = regles du jeu, 3 affichher les scores
  */
-char menu(){
+char menu() {
     // Préparation des variables
     char playerChoice;
 
@@ -95,12 +103,12 @@ char menu(){
         // Nettoyer l'interface
         system("cls");
 
-        if(playerChoice < '0' || playerChoice > '3'){
+        if (playerChoice < '0' || playerChoice > '3') {
             yellowColor();
             printf("\n  CHOISIS UNE OPTION VALABLE!\n\n");
             resetColor();
         }
-    }while(playerChoice < '0' || playerChoice > '3');
+    } while (playerChoice < '0' || playerChoice > '3');
     // Retourné le choix du joueur
     return playerChoice;
 }
@@ -108,7 +116,7 @@ char menu(){
 /**
  * Affichage des règles du jeu
  */
-void rules(){
+void rules() {
     printf("\n\n  Dans ce jeu j'ai secrétement placé 5 bateaux de guerre dans une grille:\n");
     printf("    - Un porte-avions, qui occupe 5 places\n");
     printf("    - Un croiseur, qui occupe 4 places\n");
@@ -129,37 +137,20 @@ void rules(){
 }
 
 /**
- * Affiche la grille
- */
-void grid(){
-    printf("\n\n    ╔═════╦═════╦═════╦═════╦═════╦═════╦═════╦═════╦═════╦═════╦═════╗\n"
-           "    ║     ║  A  ║  B  ║  C  ║  D  ║  E  ║  F  ║  G  ║  H  ║  I  ║  J  ║\n"
-           "    ╠═════╬═════╬═════╬═════╬═════╬═════╬═════╬═════╬═════╬═════╬═════╣\n");
-
-    for (int i = 1; i < LINES; i++) {
-        printf("    ║  %d  ║     ║     ║     ║     ║     ║     ║     ║     ║     ║     ║\n"
-               "    ╠═════╬═════╬═════╬═════╬═════╬═════╬═════╬═════╬═════╬═════╬═════╣\n", i);
-    }
-
-    printf("    ║ 10  ║     ║     ║     ║     ║     ║     ║     ║     ║     ║     ║\n"
-           "    ╚═════╩═════╩═════╩═════╩═════╩═════╩═════╩═════╩═════╩═════╩═════╝\n\n");
-}
-
-/**
  * Force le programme à se mettre en plein écran
  */
-void fullscreen(){
-    keybd_event(VK_MENU,0x38,0,0);
-    keybd_event(VK_RETURN,0x1c,0,0);
-    keybd_event(VK_RETURN,0x1c,KEYEVENTF_KEYUP,0);
-    keybd_event(VK_MENU,0x38,KEYEVENTF_KEYUP,0);
+void fullscreen() {
+    keybd_event(VK_MENU, 0x38, 0, 0);
+    keybd_event(VK_RETURN, 0x1c, 0, 0);
+    keybd_event(VK_RETURN, 0x1c, KEYEVENTF_KEYUP, 0);
+    keybd_event(VK_MENU, 0x38, KEYEVENTF_KEYUP, 0);
 }
 
 /**
  * Demande une colonne à l'utilisateur
  * @return la colonne
  */
-char askColumn(){
+char askColumn() {
     char column;
 
     // Faire tant que le choix n'est pas entre A et J ou a et j
@@ -170,7 +161,7 @@ char askColumn(){
         // Vider le buffer
         fflush(stdin);
         // Avertir l'utilisateur si le choix n'est pas entre A et J ou a et j
-        if (column < 65 || (column > 74 && column < 97) || column > 106){
+        if (column < 65 || (column > 74 && column < 97) || column > 106) {
             yellowColor();
             printf("\n  CHOISIS UNE OPTION VALABLE!\n\n");
             resetColor();
@@ -184,7 +175,7 @@ char askColumn(){
  * Demande une ligne à l'utilisateur
  * @return la ligne
  */
-int askLine(){
+int askLine() {
     int line;
 
     // Faire tant que le choix n'est pas entre 1 et 10
@@ -194,7 +185,7 @@ int askLine(){
         scanf("%d", &line);
         fflush(stdin);
         // Avertir l'utilisateur si le choix n'est pas entre 1 et 10
-        if (line > 10 || line < 1){
+        if (line > 10 || line < 1) {
             yellowColor();
             printf("\n  CHOISIS UNE OPTION VALABLE!\n\n");
             resetColor();
@@ -211,14 +202,14 @@ int askLine(){
  * @param column
  * @return Le numéro de la colonne
  */
-int columnNumber(char column){
+int columnNumber(char column) {
     int numbColumn = 0;
 
     // Transormer la lettre en numéro si elle est majuscule
     if (column >= 'A' && column <= 'Z') {
         numbColumn = column - 'A';
         // Transormer la lettre en numéro si elle est minuscule
-    }else if (column >= 'a' && column <= 'z') {
+    } else if (column >= 'a' && column <= 'z') {
         numbColumn = column - 'a';
     }
 
@@ -232,71 +223,123 @@ int columnNumber(char column){
  * @param boatsLocations
  * @return O si raté ou la premiere lettre du numero de cases du bateaux si le bateau a été touché
  */
-int shoot(int column, int line, char boatsLocations[LINES][COLUMNS]){
+int shoot(int column, int line, char boatsLocations[LINES][COLUMNS]) {
     int event;
 
-    do {
-        switch (boatsLocations[line][column]) {
-            case '2':
-                event = 2;
-                boatsLocations[line][column] = 'd';
+    switch (boatsLocations[line][column]) {
+        // Si dans la coordonnée choisi il y a un "2", alors touché le bateau
+        case '2':
+            event = 2;
+            boatsLocations[line][column] = 'd';
 
-                break;
+            break;
 
-            case '3':
-                event = 3;
-                boatsLocations[line][column] = 't';
+            // Si dans la coordonnée choisi il y a un "3", alors touché le premier bateau de 3 cases
+        case '3':
+            event = 3;
+            boatsLocations[line][column] = 't';
 
-                break;
+            break;
 
-            case '6':
-                event = 6;
-                boatsLocations[line][column] = 's';
+            // Si dans la coordonnée choisi il y a un "6", alors touché le deuxième bateau de 3 cases
+        case '6':
+            event = 6;
+            boatsLocations[line][column] = 's';
 
-                break;
+            break;
 
-            case '4':
-                event = 4;
-                boatsLocations[line][column] = 'q';
+            // Si dans la coordonnée choisi il y a un "4", alors touché le bateau de 4 cases
+        case '4':
+            event = 4;
+            boatsLocations[line][column] = 'q';
 
-                break;
+            break;
 
-            case '5':
-                event = 5;
-                boatsLocations[line][column] = 'c';
+            // Si dans la coordonnée choisi il y a un "5", alors touché le bateau de 5 cases
+        case '5':
+            event = 5;
+            boatsLocations[line][column] = 'c';
 
-                break;
+            break;
 
-            case 'O':
-                event = 0;
-                boatsLocations[line][column] = 'O';
+            // Si dans la coordonnée choisi il y a un "0", alors plouf
+        case '0':
+            event = 0;
+            boatsLocations[line][column] = 'O';
 
-                break;
+            break;
 
-            default:
-                printf("Tu as déjà tiré ici!\n");
-                event = 10;
+            // Si l'utilisateur choisi ici, ne pas tiré, coordonnée répétée
+        default:
+            printf("\n  Tu as déjà tiré ici!\n");
+            printf("\n  ");
+            system("pause");
+            event = 10;
 
-                break;
+            break;
 
-        }
-    }while(event == 10);
+    }
 
     return event;
 }
 
-void changeGrid(char boatsLocations[LINES][COLUMNS]){
+/**
+ * Affiche un "O" si le tire a raté ou un "X" si le tire a touché un bateau et remplace les "X" par des "#" si un bateaux a été détruit
+ * @param boatsLocations
+ */
+void changeGrid(char boatsLocations[LINES][COLUMNS]) {
+
+    // Afficher l'entête de la grille
     printf("\n\n    ╔═════╦═════╦═════╦═════╦═════╦═════╦═════╦═════╦═════╦═════╦═════╗\n"
            "    ║     ║  A  ║  B  ║  C  ║  D  ║  E  ║  F  ║  G  ║  H  ║  I  ║  J  ║\n"
-           "    ╠═════╬═════╬═════╬═════╬═════╬═════╬═════╬═════╬═════╬═════╬═════╣\n");
+           "    ╠═════╬═════╬═════╬═════╬═════╬═════╬═════╬═════╬═════╬═════╬═════╣");
 
-    for (int i = 1; i < LINES; i++) {
-        printf("    ║  %d  ║  %c  ║  %c  ║ %c   ║  %c  ║  %c  ║  %c   ║  %c  ║  %c  ║  %c  ║  %c  ║\n"
-               "    ╠═════╬═════╬═════╬═════╬═════╬═════╬═════╬═════╬═════╬═════╬═════╣\n", i);
+    // Vérifier toutes les lignes
+    for (int i = 0; i < LINES; i++) {
+        printf("\n    ║ %2d  ║", i + 1);
+        // Vérifier toutes les colonnes
+        for (int j = 0; j < COLUMNS; j++) {
+            if (boatsLocations[i][j] == 'd' || boatsLocations[i][j] == 't' || boatsLocations[i][j] == 's' ||
+                boatsLocations[i][j] == 'q' || boatsLocations[i][j] == 'c') {
+                // Afficher un "X" si le bateau a été touché
+                yellowColor();
+                printf("  X  ");
+                resetColor();
+                printf("║");
+            } else if (boatsLocations[i][j] == 'D' || boatsLocations[i][j] == 'T' || boatsLocations[i][j] == 'S' ||
+                       boatsLocations[i][j] == 'Q' || boatsLocations[i][j] == 'C') {
+                redColor();
+                printf("  #  ");
+                resetColor();
+                printf("║");
+            } else if (boatsLocations[i][j] == 'O') {
+                // Afficher un "O" si le tire ne touche rien
+                cyanColor();
+                printf("  O  ");
+                resetColor();
+                printf("║");
+            } else {
+                // Ne rien afficher si l'utilisateur n'as pas encore tiré ici
+                printf("     ║");
+            }
+        }
+        if (i < LINES - 1) {
+            printf("\n    ╠═════╬═════╬═════╬═════╬═════╬═════╬═════╬═════╬═════╬═════╬═════╣");
+        }
     }
 
-    printf("    ║ 10  ║     ║     ║     ║     ║     ║     ║     ║     ║     ║     ║\n"
-           "    ╚═════╩═════╩═════╩═════╩═════╩═════╩═════╩═════╩═════╩═════╩═════╝\n\n");
+    printf("\n    ╚═════╩═════╩═════╩═════╩═════╩═════╩═════╩═════╩═════╩═════╩═════╝\n\n");
+}
+
+void victory(char boatsLocation[LINES][COLUMNS]) {
+    system("cls");
+    changeGrid(boatsLocation);
+    yellowColor();
+    printf("\n  YOU WIN!\n");
+    resetColor();
+    printf("\n  ");
+    system("pause");
+    system("cls");
 }
 
 int main() {
@@ -306,24 +349,33 @@ int main() {
     SetConsoleOutputCP(65001);
 
     // Préparation des variables
-    char choice;
-    char boats[LINES][COLUMNS] = {{'0','0','0','0','0','0','0','0','2','0'},{'0','0','3','0','0','0','0','0','2','0'},{'0','0','3','0','0','0','0','0','0','0'},{'0','0','3','0','0','0','4','0','0','0'},{'0','0','0','0','0','0','4','0','0','0'},{'0','0','0','0','0','0','4','0','0','0'},{'0','0','0','0','0','0','4','0','0','0'},{'0','0','0','0','0','0','0','0','0','0'},{'5','5','5','5','5','0','0','0','0','0'},{'0','0','0','0','0','0','6','6','6','0'}};
+    char choice = 'p';
     int coordinatesLine;
     char coordinatesColumn;
     int coordinatesColumnNumber;
     int destroyedBoats = 0;
-    int boat2 = 2;
-    int boat3 = 3;
-    int boat6 = 3;
-    int boat4 = 4;
-    int boat5 = 5;
-    int events;
-    int score = 0;
 
     start();
 
     // Tourner le jeu tant que choice est différent de 0
-    do {
+    while (choice != '0') {
+        char boats[LINES][COLUMNS] = {{'0', '0', '0', '0', '0', '0', '0', '0', '2', '0'},
+                                      {'0', '0', '3', '0', '0', '0', '0', '0', '2', '0'},
+                                      {'0', '0', '3', '0', '0', '0', '0', '0', '0', '0'},
+                                      {'0', '0', '3', '0', '0', '0', '4', '0', '0', '0'},
+                                      {'0', '0', '0', '0', '0', '0', '4', '0', '0', '0'},
+                                      {'0', '0', '0', '0', '0', '0', '4', '0', '0', '0'},
+                                      {'0', '0', '0', '0', '0', '0', '4', '0', '0', '0'},
+                                      {'0', '0', '0', '0', '0', '0', '0', '0', '0', '0'},
+                                      {'5', '5', '5', '5', '5', '0', '0', '0', '0', '0'},
+                                      {'0', '0', '0', '0', '0', '0', '6', '6', '6', '0'}};
+        int boat2 = 2;
+        int boat3 = 3;
+        int boat6 = 3;
+        int boat4 = 4;
+        int boat5 = 5;
+        int events;
+
         choice = menu();
 
         // Directionner le joueur chez la fonction choiosi
@@ -332,24 +384,27 @@ int main() {
             // Jouer
             case '1':
                 while (destroyedBoats < 5) {
-                    grid();
-                    coordinatesColumn = askColumn();
-                    coordinatesLine = askLine();
-                    coordinatesColumnNumber = columnNumber(coordinatesColumn);
-                    events = shoot (coordinatesColumnNumber, coordinatesLine, boats);
+                    do {
+                        system("cls");
+                        changeGrid(boats);
+                        coordinatesColumn = askColumn();
+                        coordinatesLine = askLine();
+                        coordinatesColumnNumber = columnNumber(coordinatesColumn);
+                        events = shoot(coordinatesColumnNumber, coordinatesLine, boats);
+                    } while (events == 10);
 
-                    // Vérifier si le bateau a coulé
+                    // Vérifier si un bateau a coulé
                     switch (events) {
                         case 2:
                             boat2 = boat2 - 1;
-                            printf("Touché");
-                            if (boat2 == 0){
-                                printf("coulé\n");
-                                destroyedBoats = destroyedBoats - 1;
+                            printf("\n  Touché");
+                            if (boat2 == 0) {
+                                printf(" coulé\n");
+                                destroyedBoats++;
                                 for (int i = 0; i < LINES; i++) {
                                     for (int j = 0; j < COLUMNS; j++) {
-                                        if (boats[i][j] == 'd'){
-                                            boats[i][j] = '#';
+                                        if (boats[i][j] == 'd') {
+                                            boats[i][j] = 'D';
                                         }
                                     }
                                 }
@@ -359,14 +414,14 @@ int main() {
 
                         case 3:
                             boat3 = boat3 - 1;
-                            printf("Touché");
-                            if (boat3 == 0){
-                                printf("coulé\n");
-                                destroyedBoats = destroyedBoats - 1;
+                            printf("\n  Touché");
+                            if (boat3 == 0) {
+                                printf(" coulé\n");
+                                destroyedBoats++;
                                 for (int i = 0; i < LINES; i++) {
                                     for (int j = 0; j < COLUMNS; j++) {
-                                        if (boats[i][j] == 't'){
-                                            boats[i][j] = '#';
+                                        if (boats[i][j] == 't') {
+                                            boats[i][j] = 'T';
                                         }
                                     }
                                 }
@@ -376,14 +431,14 @@ int main() {
 
                         case 6:
                             boat6 = boat6 - 1;
-                            printf("Touché");
-                            if (boat6 == 0){
-                                printf("coulé\n");
-                                destroyedBoats = destroyedBoats - 1;
+                            printf("\n  Touché");
+                            if (boat6 == 0) {
+                                printf(" coulé\n");
+                                destroyedBoats++;
                                 for (int i = 0; i < LINES; i++) {
                                     for (int j = 0; j < COLUMNS; j++) {
-                                        if (boats[i][j] == 's'){
-                                            boats[i][j] = '#';
+                                        if (boats[i][j] == 's') {
+                                            boats[i][j] = 'S';
                                         }
                                     }
                                 }
@@ -393,14 +448,14 @@ int main() {
 
                         case 4:
                             boat4 = boat4 - 1;
-                            printf("Touché");
-                            if (boat4 == 0){
-                                printf("coulé\n");
-                                destroyedBoats = destroyedBoats - 1;
+                            printf("\n  Touché");
+                            if (boat4 == 0) {
+                                printf(" coulé\n");
+                                destroyedBoats++;
                                 for (int i = 0; i < LINES; i++) {
                                     for (int j = 0; j < COLUMNS; j++) {
-                                        if (boats[i][j] == 'q'){
-                                            boats[i][j] = '#';
+                                        if (boats[i][j] == 'q') {
+                                            boats[i][j] = 'Q';
                                         }
                                     }
                                 }
@@ -410,56 +465,48 @@ int main() {
 
                         case 5:
                             boat5 = boat5 - 1;
-                            printf("Touché ");
-                            if (boat5 == 0){
-                                printf("coulé\n");
-                                destroyedBoats = destroyedBoats - 1;
+                            printf("\n  Touché ");
+                            if (boat5 == 0) {
+                                printf(" coulé\n");
+                                destroyedBoats++;
                                 for (int i = 0; i < LINES; i++) {
                                     for (int j = 0; j < COLUMNS; j++) {
-                                        if (boats[i][j] == 'c'){
-                                            boats[i][j] = '#';
+                                        if (boats[i][j] == 'c') {
+                                            boats[i][j] = 'C';
                                         }
                                     }
-                                printf("\n");
                                 }
                             }
 
                             break;
 
                         default:
-                            printf("Plouf\n");
-                            score = score + 1;
+                            printf("\n  Plouf\n");
 
                             break;
                     }
-
-                    if (events != 0) {
-                        changeGrid(boats);
-                    }
+                    printf("\n\n  ");
+                    system("pause");
                 }
+                victory(boats);
 
                 break;
 
-            // Afficher les règles du jeu
+                // Afficher les règles du jeu
             case '2':
                 rules();
 
                 break;
 
-            // Afficher les scores
+                // Afficher les scores
             case '3':
-                //printf("Pas encore disponible\n");
-                for (int i = 0; i < LINES; i++) {
-                    for (int j = 0; j < COLUMNS; j++) {
-                        printf("%c", boats[i][j]);
-                    }
-                    printf("\n");
-                }
-
-                system("\npause");
+                printf("\n  Pas encore disponible\n");
+                printf("\n  ");
+                system("pause");
+                system("cls");
 
                 break;
         }
-    } while (choice != 0);
+    }
     return 0;
 }
