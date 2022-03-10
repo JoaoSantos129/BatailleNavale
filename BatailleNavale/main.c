@@ -240,7 +240,7 @@ int columnNumber(char column) {
  * @param column
  * @param line
  * @param boatsLocations
- * @return O si raté ou la premiere lettre du numero de cases du bateaux si le bateau a été touché
+ * @return O si raté, 10 si cooronée répétée ou la premiere lettre du numero de cases du bateaux touché
  */
 int shoot(int column, int line, char boatsLocations[LINES][COLUMNS]) {
     int event;
@@ -290,7 +290,9 @@ int shoot(int column, int line, char boatsLocations[LINES][COLUMNS]) {
 
             // Si l'utilisateur choisi ici, ne pas tiré, coordonnée répétée
         default:
+            redColor();
             printf("\n  Tu as déjà tiré ici!\n");
+            resetColor();
             printf("\n  ");
             system("pause");
             event = 10;
@@ -303,7 +305,7 @@ int shoot(int column, int line, char boatsLocations[LINES][COLUMNS]) {
 }
 
 /**
- * Affiche un "O" si le tire a raté ou un "X" si le tire a touché un bateau et remplace les "X" par des "#" si un bateaux a été détruit
+ * Affiche un "O" si le tire a raté, un "X" si le tire a touché un bateau et affiche des "#" si un bateaux a été détruit
  * @param boatsLocations
  */
 void changeGrid(char boatsLocations[LINES][COLUMNS]) {
@@ -351,24 +353,47 @@ void changeGrid(char boatsLocations[LINES][COLUMNS]) {
     printf("\n    ╚═════╩═════╩═════╩═════╩═════╩═════╩═════╩═════╩═════╩═════╩═════╝\n\n");
 }
 
-void victory(char boatsLocation[LINES][COLUMNS], int points) {
-    points = points * 100 / 83;
-    system("cls");
-    changeGrid(boatsLocation);
-    greenColor();
-    printf("\n  YOU WIN!\n\n");
-    resetColor();
-    printf("  Score: ");
-    if (points > 66){
+/**
+ * Calule le score et l'affiche en vert si il est en dessus de 66, en jaune s'il est entre 66 et 34 ou en rouge s'il est en dessous de 34
+ * @param points
+ * @return le score
+ */
+int totalScore(int points) {
+    // Règle de trois pour calculer le score
+    points = (points - 17) * 100 / 83;
+    printf("\n\n  Score: ");
+    if (points > 66) {
+        // Afficher en vert si en dessus de 66
+        greenColor();
         printf("%d\n", points);
-    }else if (points > 33){
+    } else if (points > 33) {
+        // Afficher en jaune si en dessus de 33 mais en dessous de 67
         yellowColor();
         printf("%d\n", points);
-    }else{
+    } else {
+        // Afficher en  si en dessous de 34
         redColor();
         printf("%d\n", points);
     }
     resetColor();
+
+    return points;
+}
+
+/**
+ * Affiche la fin du jeu
+ * @param boatsLocation
+ * @param points
+ */
+void victory(char boatsLocation[LINES][COLUMNS], int points) {
+    // Nettoyer l'interface
+    system("cls");
+    // Afficher la grille
+    changeGrid(boatsLocation);
+    greenColor();
+    printf("\n  VICTOIRE!");
+    resetColor();
+    totalScore(points);
     printf("\n  ");
     system("pause");
     system("cls");
@@ -385,12 +410,12 @@ int main() {
     int coordinatesLine;
     char coordinatesColumn;
     int coordinatesColumnNumber;
-    int destroyedBoats = 0;
 
     start();
 
     // Tourner le jeu tant que choice est différent de 0
     while (choice != '0') {
+        // Initialisation du tableau avec les bateaux
         char boats[LINES][COLUMNS] = {{'0', '0', '0', '0', '0', '0', '0', '0', '2', '0'},
                                       {'0', '0', '3', '0', '0', '0', '0', '0', '2', '0'},
                                       {'0', '0', '3', '0', '0', '0', '0', '0', '0', '0'},
@@ -401,6 +426,7 @@ int main() {
                                       {'0', '0', '0', '0', '0', '0', '0', '0', '0', '0'},
                                       {'5', '5', '5', '5', '5', '0', '0', '0', '0', '0'},
                                       {'0', '0', '0', '0', '0', '0', '6', '6', '6', '0'}};
+
         int boat2 = 2;
         int boat3 = 3;
         int boat6 = 3;
@@ -408,17 +434,26 @@ int main() {
         int boat5 = 5;
         int events;
         int score = 100;
+        int destroyedBoats = 0;
+        int boatsAlive;
 
         choice = menu();
 
-        // Directionner le joueur chez la fonction choiosi
+        // Directionner le joueur chez la fonction choisi
         switch (choice) {
 
             // Jouer
             case '1':
                 while (destroyedBoats < 5) {
+                    // Demander à l'utilisateur la coordonée tant que'elle n'est pas une coordonée répétée
                     do {
+                        // Calculer combien de bateaux il en reste
+                        boatsAlive = 5 - destroyedBoats;
+                        // Nettoyer l'interface
                         system("cls");
+                        // Afficher le nombre de bateaux restants au joueur
+                        printf("\n  Bateaux restants : %d", boatsAlive);
+                        totalScore(score);
                         changeGrid(boats);
                         coordinatesColumn = askColumn();
                         coordinatesLine = askLine();
@@ -428,12 +463,14 @@ int main() {
 
                     // Vérifier si un bateau a coulé
                     switch (events) {
+                        // Le bateau de 2 cases a été touché
                         case 2:
                             boat2 = boat2 - 1;
                             printf("\n  Touché");
                             if (boat2 == 0) {
                                 printf(" coulé\n");
                                 destroyedBoats++;
+                                // Remplacer toutes les lettres du bateaux touchés par des lettres majuscules
                                 for (int i = 0; i < LINES; i++) {
                                     for (int j = 0; j < COLUMNS; j++) {
                                         if (boats[i][j] == 'd') {
@@ -445,12 +482,14 @@ int main() {
 
                             break;
 
+                            // Le premier bateau de 3 cases a été touché
                         case 3:
                             boat3 = boat3 - 1;
                             printf("\n  Touché");
                             if (boat3 == 0) {
                                 printf(" coulé\n");
                                 destroyedBoats++;
+                                // Remplacer toutes les lettres du bateaux touchés par des lettres majuscules
                                 for (int i = 0; i < LINES; i++) {
                                     for (int j = 0; j < COLUMNS; j++) {
                                         if (boats[i][j] == 't') {
@@ -462,12 +501,14 @@ int main() {
 
                             break;
 
+                            // Le deuxième bateau de 3 cases a été touché
                         case 6:
                             boat6 = boat6 - 1;
                             printf("\n  Touché");
                             if (boat6 == 0) {
                                 printf(" coulé\n");
                                 destroyedBoats++;
+                                // Remplacer toutes les lettres du bateaux touchés par des lettres majuscules
                                 for (int i = 0; i < LINES; i++) {
                                     for (int j = 0; j < COLUMNS; j++) {
                                         if (boats[i][j] == 's') {
@@ -479,12 +520,14 @@ int main() {
 
                             break;
 
+                            // Le bateau de 4 cases a été touché
                         case 4:
                             boat4 = boat4 - 1;
                             printf("\n  Touché");
                             if (boat4 == 0) {
                                 printf(" coulé\n");
                                 destroyedBoats++;
+                                // Remplacer toutes les lettres du bateaux touchés par des lettres majuscules
                                 for (int i = 0; i < LINES; i++) {
                                     for (int j = 0; j < COLUMNS; j++) {
                                         if (boats[i][j] == 'q') {
@@ -496,12 +539,14 @@ int main() {
 
                             break;
 
+                            // Le bateau de 2 cases a été touché
                         case 5:
                             boat5 = boat5 - 1;
                             printf("\n  Touché ");
                             if (boat5 == 0) {
                                 printf(" coulé\n");
                                 destroyedBoats++;
+                                // Remplacer toutes les lettres du bateaux touchés par des lettres majuscules
                                 for (int i = 0; i < LINES; i++) {
                                     for (int j = 0; j < COLUMNS; j++) {
                                         if (boats[i][j] == 'c') {
@@ -513,8 +558,10 @@ int main() {
 
                             break;
 
+                            // L'utilisateur n'a pas touché un bateau
                         default:
                             printf("\n  Plouf\n");
+                            // Réduire le score
                             score--;
 
                             break;
@@ -537,6 +584,7 @@ int main() {
                 printf("\n  Pas encore disponible\n");
                 printf("\n  ");
                 system("pause");
+                // Nettoyer l'interface
                 system("cls");
 
                 break;
