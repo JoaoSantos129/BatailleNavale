@@ -1,6 +1,6 @@
 /**
  * Auteur:      João Carvalho Santos
- * Date:        09.03.22
+ * Date:        11.03.22
  * Titre:       Bataille Navale
  * Description: Jeu Bataille Navale avec 5 bateaux, le joueur doit découvrir et détruire les 5 bateaux avec le minimum de coups
  */
@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <windows.h>
 
+// Définir le numéro de lignes et de colonnes avec des constantes
 #define LINES 10
 #define COLUMNS 10
 
@@ -416,7 +417,9 @@ int main() {
     // Tourner le jeu tant que choice est différent de 0
     while (choice != '0') {
         // Initialisation du tableau avec les bateaux
-        char boats[LINES][COLUMNS] = {{'0', '0', '0', '0', '0', '0', '0', '0', '2', '0'},
+        char boats [LINES][COLUMNS];
+        FILE* grids;
+        char boatss[LINES][COLUMNS] = {{'0', '0', '0', '0', '0', '0', '0', '0', '2', '0'},
                                       {'0', '0', '3', '0', '0', '0', '0', '0', '2', '0'},
                                       {'0', '0', '3', '0', '0', '0', '0', '0', '0', '0'},
                                       {'0', '0', '3', '0', '0', '0', '4', '0', '0', '0'},
@@ -437,6 +440,30 @@ int main() {
         int destroyedBoats = 0;
         int boatsAlive;
 
+        grids = fopen("grille2.txt", "r");
+        if (NULL == grids) {
+            printf("\n\nfile can't be opened\n\n");
+        }else{
+            printf("\n\ncontent of this file are\n\n");
+        }
+        do {
+            boats[LINES][COLUMNS] = fgetc(grids);
+            printf("%c", boats[LINES][COLUMNS]);
+
+            // Checking if character is not EOF.
+            // If it is EOF stop reading.
+        } while (boats[LINES][COLUMNS] != EOF);
+
+        fclose(grids);
+        printf("\n\n");
+
+        for (int i = 0; i < LINES; i++) {
+            for (int j = 0; j < COLUMNS; j++) {
+                printf("%c", boats[i][j]);
+            }
+            printf("\n");
+        }
+
         choice = menu();
 
         // Directionner le joueur chez la fonction choisi
@@ -445,7 +472,7 @@ int main() {
             // Jouer
             case '1':
                 while (destroyedBoats < 5) {
-                    // Demander à l'utilisateur la coordonée tant que'elle n'est pas une coordonée répétée
+                    // Demander à l'utilisateur la coordonée jusqu'à ce que'elle ne soit pas répétée
                     do {
                         // Calculer combien de bateaux il en reste
                         boatsAlive = 5 - destroyedBoats;
@@ -581,8 +608,23 @@ int main() {
 
                 // Afficher les scores
             case '3':
-                printf("\n  Pas encore disponible\n");
-                printf("\n  ");
+//                printf("\n  Pas encore disponible\n");
+//                printf("\n  ");
+                grids = fopen("grille2.txt", "r");
+                if (NULL == grids) {
+                    printf("\n\nfile can't be opened\n\n");
+                }else{
+                    printf("\n\ncontent of this file are\n\n");
+                }
+                do {
+                    boats[LINES][COLUMNS] = fgetc(grids);
+                    printf("%c", boats[LINES][COLUMNS]);
+
+                    // Checking if character is not EOF.
+                    // If it is EOF stop reading.
+                } while (boats[LINES][COLUMNS] != EOF);
+                fclose(grids);
+                printf("\n\n");
                 system("pause");
                 // Nettoyer l'interface
                 system("cls");
