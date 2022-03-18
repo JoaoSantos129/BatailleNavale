@@ -446,15 +446,18 @@ int main() {
         }else{
             printf("\n\ncontent of this file are\n\n");
         }
-        do {
-            boats[LINES][COLUMNS] = fgetc(grids);
-            printf("%c", boats[LINES][COLUMNS]);
+        for (int ligne = 0; ligne < LINES; ++ligne) {
+            for (int column = 0; column < COLUMNS; ++column) { // Double boucle pour parcourir votre variable de tableau (celle qu'on va remplir)
 
-            // Checking if character is not EOF.
-            // If it is EOF stop reading.
-        } while (boats[LINES][COLUMNS] != EOF);
+                boats[ligne][column] = fgetc(grids); // On prend chaque caractère et on le met dans la cellule en question (fgetc prend un et un seul caractère)
+                if (boats[ligne][column] == '\n') { // On vérifie si le caractère n'est pas un retour à la ligne mais s'il l'est, on prend le suivant à la place
+                    boats[ligne][column] = fgetc(grids);
+                }
+                printf("%c", boats[ligne][column]);
+            }
+            printf("\n");
+        }
 
-        fclose(grids);
         printf("\n\n");
 
         for (int i = 0; i < LINES; i++) {
@@ -463,6 +466,7 @@ int main() {
             }
             printf("\n");
         }
+        fclose(grids);
 
         choice = menu();
 
