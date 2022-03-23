@@ -7,6 +7,7 @@
 
 #include <stdio.h>
 #include <windows.h>
+#include <time.h>
 
 // Définir le numéro de lignes et de colonnes avec des constantes
 #define LINES 10
@@ -151,7 +152,7 @@ void rules() {
     redColor();
     printf("#");
     resetColor();
-    printf("' = Cette case fait partie d'un bateau détruit\n\n\n");
+    printf("' = Cette case fait partie d'un bateau détruit\n\n\n  ");
     system("pause");
     system("cls");
 }
@@ -400,6 +401,55 @@ void victory(char boatsLocation[LINES][COLUMNS], int points) {
     system("cls");
 }
 
+/**
+ * Choisi une grille aléatoire entre les 5 disponibles
+ * @param boatsLocation
+ * @param mapRandom
+ */
+void randomGrid(char boatsLocation[LINES][COLUMNS], int mapRandom) {
+    // Variable pour la carte
+    FILE *grid;
+
+    // Ouvrir le fichier choisi avec la carte
+    switch (mapRandom) {
+        case 1:
+            grid = fopen("C:\\MA-20\\BatailleNavale\\BatailleNavale\\cmake-build-debug\\Maps\\grille1.txt", "r");
+
+            break;
+        case 2:
+            grid = fopen("C:\\MA-20\\BatailleNavale\\BatailleNavale\\cmake-build-debug\\Maps\\grille2.txt", "r");
+
+            break;
+        case 3:
+            grid = fopen("C:\\MA-20\\BatailleNavale\\BatailleNavale\\cmake-build-debug\\Maps\\grille3.txt", "r");
+
+            break;
+        case 4:
+            grid = fopen("C:\\MA-20\\BatailleNavale\\BatailleNavale\\cmake-build-debug\\Maps\\grille4.txt", "r");
+
+            break;
+        case 5:
+            grid = fopen("C:\\MA-20\\BatailleNavale\\BatailleNavale\\cmake-build-debug\\Maps\\grille5.txt", "r");
+
+            break;
+    }
+
+    // Double boucle pour parcourir la variable de tableau
+    for (int ligne = 0; ligne < LINES; ++ligne) {
+        for (int column = 0; column < COLUMNS; ++column) {
+            // Chaque caractère est prit et mit dans la cellule en question
+            boatsLocation[ligne][column] = fgetc(grid);
+            // Ignorer les retours à la ligne
+            if (boatsLocation[ligne][column] == '\n') {
+                boatsLocation[ligne][column] = fgetc(grid);
+            }
+        }
+    }
+
+    // Fermer le fichier
+    fclose(grid);
+}
+
 int main() {
     fullscreen();
 
@@ -412,62 +462,34 @@ int main() {
     char coordinatesColumn;
     int coordinatesColumnNumber;
 
+    srand(time(0));
+
     start();
 
     // Tourner le jeu tant que choice est différent de 0
     while (choice != '0') {
         // Initialisation du tableau avec les bateaux
-        char boats [LINES][COLUMNS];
-        FILE* grids;
-        char boatss[LINES][COLUMNS] = {{'0', '0', '0', '0', '0', '0', '0', '0', '2', '0'},
-                                      {'0', '0', '3', '0', '0', '0', '0', '0', '2', '0'},
-                                      {'0', '0', '3', '0', '0', '0', '0', '0', '0', '0'},
-                                      {'0', '0', '3', '0', '0', '0', '4', '0', '0', '0'},
-                                      {'0', '0', '0', '0', '0', '0', '4', '0', '0', '0'},
-                                      {'0', '0', '0', '0', '0', '0', '4', '0', '0', '0'},
-                                      {'0', '0', '0', '0', '0', '0', '4', '0', '0', '0'},
-                                      {'0', '0', '0', '0', '0', '0', '0', '0', '0', '0'},
-                                      {'5', '5', '5', '5', '5', '0', '0', '0', '0', '0'},
-                                      {'0', '0', '0', '0', '0', '0', '6', '6', '6', '0'}};
+        char boats[LINES][COLUMNS];
 
+        // Variable qui choisira une carte aléatoire entre 1 et 5
+        int randomMap = rand() % 5 + 1;
+
+        // Variables des bateaux
         int boat2 = 2;
         int boat3 = 3;
         int boat6 = 3;
         int boat4 = 4;
         int boat5 = 5;
-        int events;
-        int score = 100;
         int destroyedBoats = 0;
         int boatsAlive;
 
-        grids = fopen("grille2.txt", "r");
-        if (NULL == grids) {
-            printf("\n\nfile can't be opened\n\n");
-        }else{
-            printf("\n\ncontent of this file are\n\n");
-        }
-        for (int ligne = 0; ligne < LINES; ++ligne) {
-            for (int column = 0; column < COLUMNS; ++column) { // Double boucle pour parcourir votre variable de tableau (celle qu'on va remplir)
+        // Varible qui teste ce qui se passe
+        int events;
 
-                boats[ligne][column] = fgetc(grids); // On prend chaque caractère et on le met dans la cellule en question (fgetc prend un et un seul caractère)
-                if (boats[ligne][column] == '\n') { // On vérifie si le caractère n'est pas un retour à la ligne mais s'il l'est, on prend le suivant à la place
-                    boats[ligne][column] = fgetc(grids);
-                }
-                printf("%c", boats[ligne][column]);
-            }
-            printf("\n");
-        }
+        // Variable qui calcule le score
+        int score = 100;
 
-        printf("\n\n");
-
-        for (int i = 0; i < LINES; i++) {
-            for (int j = 0; j < COLUMNS; j++) {
-                printf("%c", boats[i][j]);
-            }
-            printf("\n");
-        }
-        fclose(grids);
-
+        randomGrid(boats, randomMap);
         choice = menu();
 
         // Directionner le joueur chez la fonction choisi
@@ -612,23 +634,8 @@ int main() {
 
                 // Afficher les scores
             case '3':
-//                printf("\n  Pas encore disponible\n");
-//                printf("\n  ");
-                grids = fopen("grille2.txt", "r");
-                if (NULL == grids) {
-                    printf("\n\nfile can't be opened\n\n");
-                }else{
-                    printf("\n\ncontent of this file are\n\n");
-                }
-                do {
-                    boats[LINES][COLUMNS] = fgetc(grids);
-                    printf("%c", boats[LINES][COLUMNS]);
-
-                    // Checking if character is not EOF.
-                    // If it is EOF stop reading.
-                } while (boats[LINES][COLUMNS] != EOF);
-                fclose(grids);
-                printf("\n\n");
+                printf("\n  Pas encore disponible\n");
+                printf("\n  ");
                 system("pause");
                 // Nettoyer l'interface
                 system("cls");
