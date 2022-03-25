@@ -13,6 +13,9 @@
 #define LINES 10
 #define COLUMNS 10
 
+// Définir le numéro max de caractères du pseudo avec une constante
+#define MAXNAME 20
+
 /**
  * Changer la couleur de touts les prochains caractères en bleu clair
  */
@@ -248,7 +251,7 @@ int shoot(int column, int line, char boatsLocations[LINES][COLUMNS]) {
     int event;
 
     switch (boatsLocations[line][column]) {
-        // Si dans la coordonnée choisi il y a un "2", alors touché le bateau
+        // Si dans la coordonnée choisi il y a un "2", alors touché le bateau de 2 cases
         case '2':
             event = 2;
             boatsLocations[line][column] = 'd';
@@ -360,10 +363,10 @@ void changeGrid(char boatsLocations[LINES][COLUMNS]) {
  * @param points
  * @return le score
  */
-int totalScore(int points) {
+int totalScore(int points, char playerName[MAXNAME]) {
     // Règle de trois pour calculer le score
     points = (points - 17) * 100 / 83;
-    printf("\n\n  Score: ");
+    printf("\n\n  Score de %s: ", playerName);
     if (points > 66) {
         // Afficher en vert si en dessus de 66
         greenColor();
@@ -387,7 +390,7 @@ int totalScore(int points) {
  * @param boatsLocation
  * @param points
  */
-void victory(char boatsLocation[LINES][COLUMNS], int points) {
+void victory(char boatsLocation[LINES][COLUMNS], int points, char name[MAXNAME]) {
     // Nettoyer l'interface
     system("cls");
     // Afficher la grille
@@ -395,7 +398,7 @@ void victory(char boatsLocation[LINES][COLUMNS], int points) {
     greenColor();
     printf("\n  VICTOIRE!");
     resetColor();
-    totalScore(points);
+    totalScore(points, name);
     printf("\n  ");
     system("pause");
     system("cls");
@@ -410,26 +413,26 @@ void randomGrid(char boatsLocation[LINES][COLUMNS], int mapRandom) {
     // Variable pour la carte
     FILE *grid;
 
-    // Ouvrir le fichier choisi avec la carte
+    // Ouvrir le fichier choisi aléatoirement avec la carte
     switch (mapRandom) {
         case 1:
-            grid = fopen("C:\\MA-20\\BatailleNavale\\BatailleNavale\\cmake-build-debug\\Maps\\grille1.txt", "r");
+            grid = fopen("Maps\\grille1.txt", "r");
 
             break;
         case 2:
-            grid = fopen("C:\\MA-20\\BatailleNavale\\BatailleNavale\\cmake-build-debug\\Maps\\grille2.txt", "r");
+            grid = fopen("Maps\\grille2.txt", "r");
 
             break;
         case 3:
-            grid = fopen("C:\\MA-20\\BatailleNavale\\BatailleNavale\\cmake-build-debug\\Maps\\grille3.txt", "r");
+            grid = fopen("Maps\\grille3.txt", "r");
 
             break;
         case 4:
-            grid = fopen("C:\\MA-20\\BatailleNavale\\BatailleNavale\\cmake-build-debug\\Maps\\grille4.txt", "r");
+            grid = fopen("Maps\\grille4.txt", "r");
 
             break;
         case 5:
-            grid = fopen("C:\\MA-20\\BatailleNavale\\BatailleNavale\\cmake-build-debug\\Maps\\grille5.txt", "r");
+            grid = fopen("Maps\\grille5.txt", "r");
 
             break;
     }
@@ -450,18 +453,59 @@ void randomGrid(char boatsLocation[LINES][COLUMNS], int mapRandom) {
     fclose(grid);
 }
 
+/**
+ * Demande un pseudo à l'utilisateur (20 caractères max.)
+ * @param name
+ * @return Le pseudo choisi par l'utilisateur
+ */
+char askNickname(char name[MAXNAME]){
+    // Demander un pseudo à l'utilisateur tant que le pseudo choisi n'a pas moins de 20 caractères
+    do {
+        // Demander le pseudo
+        yellowColor();
+        printf("\n\n  Entrez votre pseudo:");
+        resetColor();
+        scanf("%s", name);
+        // Vider le buffer
+        fflush(stdin);
+
+        // Si le pseudo choisi a plus de 20 caractères alors affiché message d'erreur
+        if (strlen(name) > MAXNAME) {
+            redColor();
+            printf("\n\n  Ton pseudo est trop long (20 caractères maximum)\n\n  ");
+            resetColor();
+            system("pause");
+            system("cls");
+        }
+    } while (strlen(name) > MAXNAME);
+}
+
+void saveScore (char name[MAXNAME], int points){
+    // Variable pour les scores
+    FILE *scores;
+
+    scores = fopen("Scores\\scores.txt", "a");
+
+    fprintf(scores, "%s = %d\n", name, points);
+
+    fclose(scores);
+}
+
 int main() {
     fullscreen();
 
     // Commande pour les accents et caractères spéciaux
     SetConsoleOutputCP(65001);
 
-    // Préparation des variables
+    // Variable pour le choix du menu
     char choice = 'p';
+
+    // Variables pour les cordonées
     int coordinatesLine;
     char coordinatesColumn;
     int coordinatesColumnNumber;
 
+    // Fonction qui reset srand pour choisir une grille aléatoire
     srand(time(0));
 
     start();
@@ -483,6 +527,9 @@ int main() {
         int destroyedBoats = 0;
         int boatsAlive;
 
+        // Variable pour stocker le pseudo de l'utilisateur
+        char nickname[MAXNAME];
+
         // Varible qui teste ce qui se passe
         int events;
 
@@ -497,6 +544,7 @@ int main() {
 
             // Jouer
             case '1':
+                askNickname(nickname);
                 while (destroyedBoats < 5) {
                     // Demander à l'utilisateur la coordonée jusqu'à ce que'elle ne soit pas répétée
                     do {
@@ -504,9 +552,10 @@ int main() {
                         boatsAlive = 5 - destroyedBoats;
                         // Nettoyer l'interface
                         system("cls");
+
                         // Afficher le nombre de bateaux restants au joueur
                         printf("\n  Bateaux restants : %d", boatsAlive);
-                        totalScore(score);
+                        totalScore(score, nickname);
                         changeGrid(boats);
                         coordinatesColumn = askColumn();
                         coordinatesLine = askLine();
@@ -622,7 +671,8 @@ int main() {
                     printf("\n\n  ");
                     system("pause");
                 }
-                victory(boats, score);
+                victory(boats, score, nickname);
+                saveScore(nickname, score);
 
                 break;
 
