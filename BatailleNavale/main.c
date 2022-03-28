@@ -463,7 +463,7 @@ char askNickname(char name[MAXNAME]){
     do {
         // Demander le pseudo
         yellowColor();
-        printf("\n\n  Entrez votre pseudo:");
+        printf("\n\n  Entrez votre pseudo (sans espaces):");
         resetColor();
         scanf("%s", name);
         // Vider le buffer
@@ -480,14 +480,36 @@ char askNickname(char name[MAXNAME]){
     } while (strlen(name) > MAXNAME);
 }
 
-void saveScore (char name[MAXNAME], int points){
+/**
+ * Sauvegarde le score de la partie dans un fichier
+ * @param name
+ * @param points
+ */
+void saveScore(char name[MAXNAME], int points){
     // Variable pour les scores
     FILE *scores;
 
+    // Ouvrir le fichier des scores
     scores = fopen("Scores\\scores.txt", "a");
 
-    fprintf(scores, "%s = %d\n", name, points);
+    // Sauvegarder le score
+    fprintf(scores, "\n  %s=%d\n", name, points);
 
+    // Fermer le fichier des scores
+    fclose(scores);
+}
+
+void showScores(){
+    FILE *scores;
+    char score[100];
+
+    scores = fopen("Scores\\scores.txt", "r");
+
+    fscanf(scores, "%s", &score);
+
+    printf("%s", score);
+
+    // Fermer le fichier
     fclose(scores);
 }
 
@@ -684,8 +706,7 @@ int main() {
 
                 // Afficher les scores
             case '3':
-                printf("\n  Pas encore disponible\n");
-                printf("\n  ");
+                showScores();
                 system("pause");
                 // Nettoyer l'interface
                 system("cls");
