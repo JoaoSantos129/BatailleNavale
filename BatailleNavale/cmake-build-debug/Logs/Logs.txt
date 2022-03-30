@@ -1,0 +1,19 @@
+30/03/2022 à 15:45:21 : L'utilisateur a affiché l'aide du jeu
+30/03/2022 à 15:45:21 : L'utilisateur a affiché l'aide du jeu
+30/03/2022 à 15:45:22 : L'utilisateur a affiché l'aide du jeu
+30/03/2022 à 15:45:22 : L'utilisateur a affiché l'aide du jeu
+30/03/2022 à 15:45:22 : L'utilisateur a affiché l'aide du jeu
+30/03/2022 à 15:45:23 : L'utilisateur a affiché l'aide du jeu
+30/03/2022 à 15:45:23 : L'utilisateur a affiché l'aide du jeu
+30/03/2022 à 15:45:24 : L'utilisateur a affiché l'aide du jeu
+30/03/2022 à 15:45:27 : L'utilisateur a affiché les scores
+30/03/2022 à 15:45:54 : L'utilisateur a commencé une partie
+30/03/2022 à 15:49:07 : L'utilisateur a fini une partie
+30/03/2022 à 15:49:10 : L'utilisateur a commencé une partie
+30/03/2022 à 15:49:47 : L'utilisateur a affiché les scores
+30/03/2022 à 15:49:51 : L'utilisateur a affiché les scores
+30/03/2022 à 15:50:14 : L'utilisateur a commencé une partie
+30/03/2022 à 15:50:46 : L'utilisateur a quitté le jeu à partir du menu
+30/03/2022 à 15:51:34 : L'utilisateur a commencé une partie
+30/03/2022 à 15:58:02 : L'utilisateur a fini une partie
+30/03/2022 à 15:58:04 : L'utilisateur a quitté le jeu à partir du menu

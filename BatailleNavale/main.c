@@ -1,6 +1,6 @@
 /**
  * Auteur:      João Carvalho Santos
- * Date:        11.03.22
+ * Date:        30.03.22
  * Titre:       Bataille Navale
  * Description: Jeu Bataille Navale avec 5 bateaux, le joueur doit découvrir et détruire les 5 bateaux avec le minimum de coups
  */
@@ -92,9 +92,9 @@ void start() {
  * Affiche le menu et demande au joueur ce qu'il veut faire
  * @return Ce que le joueur veut faire: 0 = quitter, 1 = jouer, 2 = regles du jeu, 3 affichher les scores
  */
-char menu() {
+int menu() {
     // Préparation des variables
-    char playerChoice;
+    int playerChoice;
 
     // Afficher le menu tant que le premier caractère taper n'est pas 0, 1, 2 ou 3
     do {
@@ -109,18 +109,18 @@ char menu() {
         printf("    3 - Scores\n\n");
         printf("  Choix:");
         // Récupération du choix du joueur
-        scanf("%c", &playerChoice);
+        scanf("%d", &playerChoice);
         // Vider le buffer
         fflush(stdin);
         // Nettoyer l'interface
         system("cls");
 
-        if (playerChoice < '0' || playerChoice > '3') {
+        if (playerChoice < 0 || playerChoice > 3) {
             yellowColor();
             printf("\n  CHOISIS UNE OPTION VALABLE!\n\n");
             resetColor();
         }
-    } while (playerChoice < '0' || playerChoice > '3');
+    } while (playerChoice < 0 || playerChoice > 3);
     // Retourné le choix du joueur
     return playerChoice;
 }
@@ -489,28 +489,117 @@ void saveScore(char name[MAXNAME], int points){
     // Variable pour les scores
     FILE *scores;
 
+    // Règle de trois pour calculer le score
+    points = (points - 17) * 100 / 83;
+
     // Ouvrir le fichier des scores
     scores = fopen("Scores\\scores.txt", "a");
 
     // Sauvegarder le score
-    fprintf(scores, "\n  %s=%d\n", name, points);
+    fprintf(scores, "%s=%d\n", name, points);
 
     // Fermer le fichier des scores
     fclose(scores);
 }
 
+/**
+ * Affiche les scores sauvegardés dans le fichier des scores
+ */
 void showScores(){
     FILE *scores;
     char score[100];
 
+    // Ouvrir le fichier des scores
     scores = fopen("Scores\\scores.txt", "r");
 
-    fscanf(scores, "%s", &score);
+    printf("\n");
 
-    printf("%s", score);
+    // Afficher les scores tant qu'on est pas à la fin du fichier
+    while(fscanf(scores, "%s", &score) != EOF) {
+        printf("  %s\n", score);
+    }
+
+    printf("\n  ");
 
     // Fermer le fichier
     fclose(scores);
+}
+
+/**
+ * Écrit dans le fichier des logs la date et l'heure de quand un utilisateur a commencé ou fini une partie, affiché l'aide du jeu, affiché les scores ou quitté la partie
+ * @param importantLog
+ */
+void logs(int importantLog){
+    FILE *logs;
+
+    // Ouvrir le fichier
+    logs = fopen("Logs\\logs.txt", "a");
+
+    // Variables pour stocker le temps et la date
+    int hours;
+    int minutes;
+    int seconds;
+    int day;
+    int month;
+    int year;
+
+    // Obtenir le temps à l'instant
+    time_t now;
+    time(&now);
+
+    // Obtenir la date à l'instant
+    struct tm *local = localtime(&now);
+
+    // Transformer les heures ente 0 et 23
+    hours = local->tm_hour;
+
+    // Transformer les minutes entre 0 et 59
+    minutes = local->tm_min;
+
+    // Transformer les secondes entre 0 et 59
+    seconds = local->tm_sec;
+
+    // Transformer les jours entre 1 et 31
+    day = local->tm_mday;
+
+    // Transformer les mois entre 0 et 11 et faire + 1
+    month = local->tm_mon + 1;
+
+    // Transformer l'année depuis 1900
+    year = local->tm_year + 1900;
+
+    // Écrire dans le fichier la date et heure
+    fprintf(logs, "%02d/%02d/%d à %02d:%02d:%02d : ", day, month, year, hours, minutes, seconds);
+
+    // Écrire dans le fichier l'action de l'utilisateur
+    switch (importantLog) {
+        case 1:
+            fprintf(logs, "L'utilisateur a commencé une partie\n");
+
+            break;
+        case 2:
+            fprintf(logs, "L'utilisateur a affiché l'aide du jeu\n");
+
+            break;
+
+        case 3:
+            fprintf(logs, "L'utilisateur a affiché les scores\n");
+
+            break;
+
+        case 4:
+            fprintf(logs, "L'utilisateur a fini une partie\n");
+
+            break;
+
+        default:
+            fprintf(logs, "L'utilisateur a quitté le jeu à partir du menu\n");
+
+            break;
+    }
+
+    // Fermer le fichier
+    fclose(logs);
 }
 
 int main() {
@@ -520,7 +609,7 @@ int main() {
     SetConsoleOutputCP(65001);
 
     // Variable pour le choix du menu
-    char choice = 'p';
+    int choice;
 
     // Variables pour les cordonées
     int coordinatesLine;
@@ -533,7 +622,7 @@ int main() {
     start();
 
     // Tourner le jeu tant que choice est différent de 0
-    while (choice != '0') {
+    do {
         // Initialisation du tableau avec les bateaux
         char boats[LINES][COLUMNS];
 
@@ -565,7 +654,8 @@ int main() {
         switch (choice) {
 
             // Jouer
-            case '1':
+            case 1:
+                logs(choice);
                 askNickname(nickname);
                 while (destroyedBoats < 5) {
                     // Demander à l'utilisateur la coordonée jusqu'à ce que'elle ne soit pas répétée
@@ -695,17 +785,21 @@ int main() {
                 }
                 victory(boats, score, nickname);
                 saveScore(nickname, score);
+                choice = 4;
+                logs(choice);
 
                 break;
 
                 // Afficher les règles du jeu
-            case '2':
+            case 2:
+                logs(choice);
                 rules();
 
                 break;
 
                 // Afficher les scores
-            case '3':
+            case 3:
+                logs(choice);
                 showScores();
                 system("pause");
                 // Nettoyer l'interface
@@ -713,6 +807,7 @@ int main() {
 
                 break;
         }
-    }
+    } while (choice != 0);
+    logs(choice);
     return 0;
 }
