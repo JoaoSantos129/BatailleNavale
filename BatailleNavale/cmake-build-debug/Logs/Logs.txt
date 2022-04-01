@@ -20,3 +20,9 @@
 01/04/2022 à 14:12:21 : L'utilisateur a affiché les scores
 01/04/2022 à 14:12:24 : L'utilisateur a affiché l'aide du jeu
 01/04/2022 à 14:12:28 : L'utilisateur a commencé une partie
+01/04/2022 à 19:27:07 : L'utilisateur a affiché les scores
+01/04/2022 à 19:27:16 : L'utilisateur a commencé une partie
+01/04/2022 à 19:38:48 : L'utilisateur a fini une partie
+01/04/2022 à 19:38:49 : L'utilisateur a affiché les scores
+01/04/2022 à 19:39:33 : L'utilisateur a quitté le jeu à partir du menu
+01/04/2022 à 23:25:35 : L'utilisateur a affiché les scores
