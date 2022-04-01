@@ -17,3 +17,6 @@
 30/03/2022 à 15:51:34 : L'utilisateur a commencé une partie
 30/03/2022 à 15:58:02 : L'utilisateur a fini une partie
 30/03/2022 à 15:58:04 : L'utilisateur a quitté le jeu à partir du menu
+01/04/2022 à 14:12:21 : L'utilisateur a affiché les scores
+01/04/2022 à 14:12:24 : L'utilisateur a affiché l'aide du jeu
+01/04/2022 à 14:12:28 : L'utilisateur a commencé une partie
